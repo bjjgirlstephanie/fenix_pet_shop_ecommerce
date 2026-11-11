@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}Tu Carrito de Compras - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Título de la página -->
+    <div class="mb-4 pt-3">
+        <h1 class="display-5 fw-bold mb-0" style="color: #7122FA;">🛒 Tu Carrito de Compras</h1>
+        <p class="text-muted small mt-1">Revisa los productos seleccionados antes de proceder con tu pedido.</p>
+    </div>
+
+    {% if carrito %}
+    <div class="row g-4">
+
+        <!-- COLUMNA IZQUIERDA: Listado de Productos -->
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4 p-4">
+
+                <!-- Encabezado de la tarjeta -->
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                    <h2 class="h5 fw-bold mb-0" style="color: #7122FA;">Resumen del Pedido</h2>
+                    <span class="badge rounded-pill text-white px-3 py-2" style="background-color: #8B5CF6;">
+                        {{ carrito|length }} Item{% if carrito|length > 1 %}s{% endif %}
+                    </span>
+                </div>
+
+                <!-- Itera productos -->
+                {% for item in carrito %}
+                {% with producto=item.producto %}
+                <div class="d-flex mb-4 align-items-center border-bottom pb-4">
+
+                    <!-- Imagen -->
+                    <div class="me-4 rounded-3 overflow-hidden d-flex align-items-center justify-content-center shadow-sm" style="width: 85px; height: 85px; background-color: #f8f9fa;">
+                        {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <span class="text-muted small">Sin foto</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Info producto -->
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1">
+                            <a href="{ url 'catalogo:detalle_producto' producto.pk %}" class="text-decoration-none" style="color: #7122FA;">{{ producto.nombre }}</a>
+                        </h5>
+                        <p class="text-muted small mb-2">${{ producto.precio|floatformat:2 }} c/u</p>
+
+                        <div class="d-flex align-items-center gap-3">
+                           <!-- Formulario cantidad -->
+                           <form action="{% url 'carrito:carrito_add' producto.id %}" method="post" class="d-flex align-items-center">
+                                {% csrf_token %}
+                                <div class="input-group input-group-sm border rounded-pill overflow-hidden shadow-sm" style="width: 130px;">
+                                    <!-- Botón disminuir -->
+                                     <button type="submit" name="accion" value="restar"
+                                            class="input-group-text bg-white border-0 py-1 px-3 fw-bold text-secondary"
+                                             {% if item.cantidad <= 1 %}disabled{% endif %}>
+                                        -
+                                    </button>
+
+                                    <!-- Campo cantidad -->
+                                    <input type="number"
+                                           value="{{ item.cantidad }}"
+                                           class="form-control text-center border-0 py-1 bg-white fw-bold"
+                                           readonly>
+
+                                    <!-- Botón aumentar -->
+                                    <button type="submit"
+                                            name="accion"
+                                            value="sumar"
+                                            class="input-group-text bg-white border-0 py-1 px-3 fw-bold text-secondary">
+                                        +
+                                    </button>
+                                </div>
+                           </form>
+
+                           <!-- Formulario eliminar (Corregido de 'clase' a 'class') -->
+                           <form action="{% url 'carrito:carrito_remove' producto.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger rounded-circle p-2 shadow-sm"
+                                        title="Eliminar Producto"
+                                        style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                  🗑️
+                                </button>
+                           </form>
+                        </div>
+                     </div>
+
+                    <!-- Subtotal -->
+                    <div class="text-end ms-auto">
+                        <div class="fs-5 fw-bold" style="color: #8B5CF6;">${{ item.subtotal|floatformat:2 }}</div>
+                        <small class="text-muted">
+                            {{ item.cantidad }} u.
+                        </small>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+
+            <!-- Botones de Acción inferior -->
+            <div class="mt-4 d-flex justify-content-start flex-wrap gap-3">
+                <a href="{% url 'catalogo:lista_productos' %}" class="btn rounded-pill px-4 py-2 text-white fw-semibold shadow-sm" style="background-color: #8B5CF6;">
+                    ← Seguir Comprando
+                </a>
+                <a href="{% url 'carrito:carrito_clear' %}" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-semibold shadow-sm">
+                    🗑️ Vaciar Carrito
+                </a>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Resumen de Totales y Pago -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 20px;">
+                <div class="card shadow-lg p-4 rounded-4 border-0">
+                    <div class="mb-3 d-flex align-items-center">
+                        <span class="fw-bold fs-5" style="color: #7122FA;">🐾 Fenix Pet Shop</span>
+                    </div>
+
+                    <div class="p-3 mb-3 rounded-3 text-white text-center shadow-sm" style="background: linear-gradient(135deg, #7122FA, #8B5CF6);">
+                        <h3 class="h5 fw-bold mb-0">Total a Pagar</h3>
+                    </div>
+
+                    {% with subtotal_sin_iva=carrito.get_precio_total %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal (sin IVA)</span>
+                            <span class="fw-bold">${{ subtotal_sin_iva|floatformat:2 }}</span>
+                        </div>
+
+                        {% with iva=subtotal_sin_iva|mul:0.19 %}
+                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                                <span class="text-muted">Impuestos (IVA 19%)</span>
+                                <span class="fw-bold">${{ iva|floatformat:2 }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <span class="text-muted">Envío & Manejo</span>
+                                <span class="fw-bold text-success">GRATIS 🚚</span>
+                            </div>
+
+                            {% with total_final=subtotal_sin_iva|add:iva %}
+                                <div class="d-flex justify-content-between pt-3 border-top border-2">
+                                    <span class="h5 fw-bold mb-0">Total Final:</span>
+                                    <span class="h4 fw-bold mb-0" style="color: #7122FA;">${{ total_final|floatformat:2 }}</span>
+                                </div>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+
+                    <p class="small text-muted mt-3 mb-3">
+                        Los impuestos y costos de envío se aplican según la normativa local.
+                    </p>
+
+                    <a href="{% url 'ordenes:orden_create' %}" class="btn btn-lg w-100 fw-bold rounded-pill text-white shadow-sm" style="background-color: #8B5CF6; border: 2px solid #00f2fe;">
+                        💳 Proceder al Pago
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card shadow-lg border-0 rounded-4 text-center py-5 my-4">
+        <div class="card-body">
+            <div class="display-1 mb-3">🛒🐾</div>
+            <h4 class="fw-bold" style="color: #7122FA;">Tu carrito está vacío</h4>
+            <p class="text-muted mb-4">Parece que aún no has agregado ningún producto para tu mascota.</p>
+            <a href="{% url 'catalogo:lista_productos' %}" class="btn text-white fw-bold px-5 py-2 rounded-pill shadow-sm" style="background-color: #8B5CF6; border: 2px solid #00f2fe;">
+                Explorar Productos
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

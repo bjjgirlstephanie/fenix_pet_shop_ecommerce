@@ -1,0 +1,223 @@
+/* ================================================= */
+/* Colores y Tipografía PetStore */
+/* ================================================= */
+:root {
+    --petstore-primary: #5c35c6;   /* Morado/Violeta principal */
+    --petstore-secondary: #f8f8f8; /* Fondo claro */
+    --petstore-dark: #343a40;      /* Oscuro para footer/nav */
+    --petstore-price: #e63946;     /* Rojo para precios/favoritos */
+    --petstore-light-bg: #f7f3f0;  /* Fondo claro alternativo */
+}
+
+/* --- BARRA DE NAVEGACIÓN --- */
+.petstore-navbar {
+    background-color: var(--petstore-primary) !important;
+    padding: 1rem 0;
+}
+
+.petstore-navbar .navbar-brand {
+    color: white !important;
+    font-weight: bold;
+}
+
+.petstore-navbar .navbar-brand small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.petstore-navbar .nav-link {
+    color: white !important;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.petstore-navbar .nav-link:hover,
+.petstore-navbar .nav-link.active {
+    color: #ffd700 !important; /* Dorado al pasar el mouse */
+}
+
+/* --- CARDS (Tarjetas de Producto) --- */
+.card {
+    border-radius: 12px;
+    border: none;
+    overflow: hidden;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    background-color: var(--petstore-light-bg);
+}
+
+/* --- BOTONES DE CATEGORÍA --- */
+.category-filter .btn {
+    border-radius: 50rem;
+    margin-right: 10px;
+}
+
+.category-filter .btn-primary {
+    background-color: var(--petstore-primary);
+    border-color: var(--petstore-primary);
+}
+
+/* --- FOOTER --- */
+.petstore-footer {
+    background-color: var(--petstore-dark);
+    color: black;
+}
+
+.petstore-footer h5 {
+    color: black;
+    border-bottom: 2px solid var(--petstore-primary);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.petstore-footer a {
+    color: #ccc !important;
+    transition: color 0.2s;
+}
+
+.petstore-footer a:hover {
+    color: var(--petstore-primary) !important;
+}
+
+.petstore-footer .text-muted {
+    color: #bbb !important;
+}
+
+/* --- BOTONES GENERALES --- */
+.btn-primary {
+    background-color: var(--petstore-primary) !important;
+    border-color: var(--petstore-primary) !important;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #4a2b9f !important;
+    border-color: #4a2b9f !important;
+}
+
+/* ================================================= */
+/* 2. Tarjeta de Producto (Lista) */
+/* ================================================= */
+.product-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* ================================================= */
+/* 3. Botón de Favorito (Icono de Corazón) */
+/* ================================================= */
+.favorito-icon {
+    color: #ccc;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.favorito-icon.active {
+    color: var(--petstore-price);
+    transform: scale(1.1);
+}
+
+.js-toggle-favorito:hover .favorito-icon {
+    color: var(--petstore-price);
+}
+
+/* ================================================= */
+/* 4. Detalle del Producto */
+/* ================================================= */
+.detalle-producto .display-5 {
+    font-size: 2.5rem;
+}
+
+.detalle-producto .lead {
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.form-select.w-auto {
+    width: auto !important;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* ================================================= */
+/* 5. Offcanvas del Carrito */
+/* ================================================= */
+.offcanvas-header {
+    background-color: var(--petstore-primary);
+    color: white;
+}
+
+.offcanvas-body {
+    background-color: var(--petstore-light-bg);
+}
+
+.offcanvas-item {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.offcanvas-total {
+    background-color: var(--petstore-dark);
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* ================================================= */
+/* 6. Checkout */
+/* ================================================= */
+.border-petstore-primary {
+    border: 1px solid var(--petstore-primary) !important;
+}
+
+.sticky-top {
+    align-self: flex-start;
+}
+
+
+
+<style>
+/* Estilo de enlaces limpios para las categorías */
+.nav-link-categoria {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #4a5568; /* Gris oscuro elegante y profesional */
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    position: relative;
+}
+
+/* Efecto al pasar el cursor (Hover) */
+.nav-link-categoria:hover {
+    color: #00828a !important; /* Tono cian/azulado más profundo y legible sobre fondo claro */
+    background-color: rgba(0, 242, 254, 0.08);
+}
+
+/* Estado ACTIVO: Se destaca claramente con tipografía en negrilla y un sutil subrayado o color vibrante */
+.nav-link-categoria.active {
+    color: #0056b3 !important;
+    font-weight: 700;
+    background-color: rgba(0, 242, 254, 0.15);
+    border-bottom: 2px solid #00f2fe;
+}
+
+
+</style>

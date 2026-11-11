@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Regístrate" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-3 p-2">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold" style="color: #7122FA;">🐾 Regístrate</h2>
+                    <p class="text-muted small mt-2">
+                        ¿Ya tienes una cuenta? <a href="{% url 'account_login' %}" class="text-decoration-none fw-bold" style="color: #7122FA;">Inicia Sesión</a> primero.
+                    </p>
+                    <hr class="w-75 mx-auto mt-3">
+                </div>
+
+                <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-secondary small">{{ field.label }}:</label>
+
+                            <!-- Inyectamos las clases de Bootstrap de forma elegante -->
+                            {{ field }}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+
+                    <button class="btn btn-lg w-100 mt-4 text-white fw-bold rounded-pill shadow-sm" type="submit" style="background-color: #8B5CF6; border: 2px solid #00f2fe;">
+                        {% trans "Registrar Cuenta" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script opcional rápido para asegurar que los inputs de Django usen las clases form-control de Bootstrap -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputs = document.querySelectorAll("#signup_form input:not([type='checkbox']):not([type='hidden']), #signup_form select, #signup_form textarea");
+        inputs.forEach(input => {
+            if (!input.classList.contains('form-control')) {
+                input.classList.add('form-control', 'rounded-3', 'py-2');
+            }
+        });
+        const checkboxes = document.querySelectorAll("#signup_form input[type='checkbox']");
+        checkboxes.forEach(cb => {
+            cb.classList.add('form-check-input', 'me-2');
+        });
+    });
+</script>
+{% endblock %}

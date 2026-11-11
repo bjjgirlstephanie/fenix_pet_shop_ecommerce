@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}Simulación de Tarjeta - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Cabecera de la pasarela -->
+                <div class="card-header text-white py-4 px-4 text-center" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border-bottom: 3px solid #00f2fe;">
+                    <h3 class="fw-bold mb-0">💳 Pasarela de Pago Segura</h3>
+                    <p class="small mb-0 text-white-50">Orden #{{ orden_id }} • Total: ${{ total_final|floatformat:2 }} COP</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Nombre en la Tarjeta</label>
+                            <input type="text" class="form-control rounded-3 py-2 border-2" placeholder="Ej. Estefany Meneses" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Número de Tarjeta</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-2"><i class="fas fa-credit-card"></i></span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-2" maxlength="16" minlength="16" pattern="\d{16}" placeholder="4000 1234 5678 9010" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-secondary">Vencimiento</label>
+                                <input type="text" class="form-control rounded-3 py-2 border-2" maxlength="5" placeholder="MM/AA" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-secondary">CVV</label>
+                                <input type="password" class="form-control rounded-3 py-2 border-2" maxlength="4" placeholder="123" required>
+                            </div>
+                        </div>
+
+                        <!-- Botón de pago -->
+                        <button type="submit" class="btn text-white fw-bold py-3 rounded-pill shadow-lg w-100" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+                            🔒 Pagar ${{ total_final|floatformat:2 }}
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'ordenes:orden_create' %}" class="text-decoration-none text-muted small">
+                            ← Cancelar y volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

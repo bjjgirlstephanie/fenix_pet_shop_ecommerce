@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Cabecera con el degradado corporativo vibrante -->
+                <div class="card-header text-white py-3 px-4 fw-bold fs-5" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+                    <h3 class="mb-0 fs-5">🐾 NutriCalculadora Avanzada: {{ producto.nombre }}</h3>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    <!-- Ficha resumida del producto -->
+                    <div class="row align-items-center mb-4 p-3 rounded-4 bg-light border shadow-sm">
+                        <div class="col-md-4 text-center">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid rounded-3" style="max-height: 140px; object-fit: contain;">
+                            {% else %}
+                                <i class="fas fa-bone fa-4x text-muted"></i>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="fw-bold" style="color: #7122FA;">{{ producto.marca }}</h5>
+                            <p class="text-muted small mb-2">{{ producto.descripcion }}</p>
+                            <span class="badge px-3 py-2 text-white rounded-pill fw-semibold fs-6" style="background-color: #7122FA;">
+                                ${{ producto.precio|floatformat:2 }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Tipo de Mascota</label>
+                            <select name="tipo_mascota" id="tipo_mascota" class="form-select rounded-3 py-2 border-2" onchange="actualizarPerfiles()">
+                                <option value="perro">🐶 Perro</option>
+                                <option value="gato">🐱 Gato</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Etapa de Vida y Tamaño / Raza</label>
+                            <select name="etapa_tamano" id="etapa_tamano" class="form-select rounded-3 py-2 border-2">
+                                <!-- Opciones iniciales para Perro -->
+                                <option value="cachorro_pequeno">🐶 Cachorro - Raza Pequeña (Alta energía)</option>
+                                <option value="cachorro_grande">🐶 Cachorro - Raza Mediana / Grande</option>
+                                <option value="adulto_pequeno">🐕 Perro Adulto - Raza Pequeña / Mini</option>
+                                <option value="adulto_mediano" selected>🐕 Perro Adulto - Raza Mediana (Normal)</option>
+                                <option value="adulto_grande">🐕 Perro Adulto - Raza Grande</option>
+                                <option value="esterilizado">🐕 Perro Adulto Esterilizado / Control de peso</option>
+                                <option value="senior">🦮 Perro Senior / Mayor</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Peso actual de tu mascota (kg)</label>
+                            <input type="number" name="peso" step="0.1" min="0.5" class="form-control rounded-3 py-2 border-2" required placeholder="Ej: 8.5">
+                        </div>
+
+                        <!-- Botón principal con degradado y borde neón -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn text-white fw-bold w-100 py-3 rounded-pill shadow-lg" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+                                🧮 Calcular Porción Exacta en Gramos
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if calculado %}
+                    <!-- Bloque de resultados estilizado con la paleta violeta/fucsia -->
+                    <div class="alert mt-4 shadow-sm border-0 rounded-4 p-4" style="background-color: #f3e8ff; color: #7122FA; border: 2px solid #8B5CF6 !important;">
+                        <h4 class="alert-heading fw-bold">🥣 Dosificación Exacta Recomendada</h4>
+                        <hr style="border-color: #8B5CF6; opacity: 0.3;">
+                        <p class="mb-2 fs-6 text-dark">
+                            Basado en el producto seleccionado y el perfil de tu mascota, la porción diaria sugerida es:
+                        </p>
+                        <ul class="list-unstyled mb-3">
+                            <li class="fs-3 fw-bold" style="color: #7122FA;">Porción Diaria: <span class="text-dark">{{ gramos_diarios }} gramos</span></li>
+                            <li class="fs-5 text-muted">🥄 Equivalente aproximado: {{ tazas_diarias }} tazas al día</li>
+                            <li class="small text-secondary mt-1">⚡ Gasto Energético Total: {{ calorias_recomendadas }} kcal/día</li>
+                        </ul>
+                        <div class="alert py-2 small mb-3 text-dark bg-white shadow-sm rounded-3 border">
+                            💡 <em>Tip: Divide esta cantidad total en 2 tomas diarias (mañana y noche) para cuidar su digestión.</em>
+                        </div>
+                        <div class="text-end">
+                            <form action="{% url 'carrito:carrito_add' producto.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn text-white fw-bold rounded-pill px-4 py-2 shadow-sm" style="background-color: #8B5CF6; border: 2px solid #00f2fe;">
+                                    <i class="fas fa-shopping-cart me-2"></i> Agregar este alimento al carrito
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script dinámico para alternar opciones de Perros y Gatos en el select -->
+<script>
+function actualizarPerfiles() {
+    const tipo = document.getElementById('tipo_mascota').value;
+    const selectEtapa = document.getElementById('etapa_tamano');
+
+    selectEtapa.innerHTML = "";
+
+    if (tipo === 'perro') {
+        selectEtapa.innerHTML = `
+            <option value="cachorro_pequeno">🐶 Cachorro - Raza Pequeña (Alta energía)</option>
+            <option value="cachorro_grande">🐶 Cachorro - Raza Mediana / Grande</option>
+            <option value="adulto_pequeno">🐕 Perro Adulto - Raza Pequeña / Mini</option>
+            <option value="adulto_mediano" selected>🐕 Perro Adulto - Raza Mediana (Normal)</option>
+            <option value="adulto_grande">🐕 Perro Adulto - Raza Grande</option>
+            <option value="esterilizado">🐕 Perro Adulto Esterilizado / Control de peso</option>
+            <option value="senior">🦮 Perro Senior / Mayor</option>
+        `;
+    } else {
+        selectEtapa.innerHTML = `
+            <option value="gato_cachorro">🐱 Gato Cachorro (Crecimiento)</option>
+            <option value="gato_adulto" selected>🐱 Gato Adulto / Esterilizado</option>
+            <option value="gato_senior">🐱 Gato Senior (Mayor a 7 años)</option>
+        `;
+    }
+}
+</script>
+{% endblock %}

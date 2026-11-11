@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load mathfilters %}
+{% load static %}
+
+{% block title %}Finalizar Compra - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Navegación y Encabezado Superior -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-3">
+        <div class="d-flex align-items-center">
+            <span class="fs-3 me-2">🐾</span>
+            <h1 class="h4 fw-bold mb-0" style="color: #7122FA;">Fenix Pet Shop <span class="text-muted small fs-6">| Finalizar Compra</span></h1>
+        </div>
+        <a href="{% url 'catalogo:lista_productos' %}" class="btn rounded-pill px-4 py-2 text-white fw-semibold shadow-sm" style="background-color: #8B5CF6;">
+            ← Seguir Comprando
+        </a>
+    </div>
+
+    <h2 class="h1 fw-bold mb-4 d-flex align-items-center" style="color: #7122FA;">
+        <i class="fas fa-lock me-3" style="color: #8B5CF6;"></i> Finalizar Compra
+    </h2>
+
+    <form action="{% url 'ordenes:orden_create' %}" method="post" id="checkout-form">
+        {% csrf_token %}
+
+        <div class="row g-4">
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="col-lg-8">
+                <!-- 1. RESUMEN DEL PEDIDO -->
+                <div class="card shadow-lg border-0 rounded-4 p-4 mb-4 overflow-hidden">
+                    <div class="card-header text-white py-3 px-4 fw-bold fs-5 rounded-3 mb-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+                        <span>🛒 1. Resumen del Pedido</span>
+                        <span class="badge rounded-pill bg-white text-dark">{{ carrito|length }} Items</span>
+                    </div>
+
+                    {% for item in carrito %}
+                    {% with producto=item.producto %}
+                    <div class="d-flex mb-4 align-items-center border-bottom pb-3">
+                        <!-- Imagen -->
+                        <div class="me-3 rounded-3 overflow-hidden d-flex align-items-center justify-content-center shadow-sm" style="width: 70px; height: 70px; background-color: #f8f9fa;">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-100 h-100 object-fit-cover">
+                            {% else %}
+                                <span class="text-muted small">Sin foto</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1" style="color: #7122FA;">{{ producto.nombre }}</h5>
+                            <p class="text-muted small mb-1">{{ producto.descripcion|truncatechars:50 }}</p>
+                            <div class="d-flex align-items-center small">
+                                <span class="text-muted me-2">Cantidad:</span>
+                                <span class="fw-bold px-2 py-1 bg-light rounded-pill border">{{ item.cantidad }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="text-end ms-auto">
+                            <div class="fw-bold fs-5" style="color: #8B5CF6;">${{ item.subtotal|floatformat:2 }}</div>
+                            <small class="text-muted">${{ item.precio|floatformat:2 }} c/u</small>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+
+                <!-- 2. DIRECCIÓN DE ENVÍO -->
+                <div class="card shadow-lg border-0 rounded-4 p-4 mb-4 overflow-hidden">
+                    <div class="card-header text-white py-3 px-4 fw-bold fs-5 rounded-3 mb-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+                        <span>📍 2. Dirección de Envío</span>
+                        <i class="fas fa-home fa-lg text-white"></i>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_nombre" class="form-label fw-bold text-secondary">Nombre</label>
+                            <input type="text" name="nombre" id="id_nombre" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_apellido" class="form-label fw-bold text-secondary">Apellido</label>
+                            <input type="text" name="apellido" id="id_apellido" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="id_email" class="form-label fw-bold text-secondary">Correo electrónico</label>
+                            <input type="email" name="email" id="id_email" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="id_direccion" class="form-label fw-bold text-secondary">Dirección</label>
+                            <input type="text" name="direccion" id="id_direccion" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_codigo_postal" class="form-label fw-bold text-secondary">Código Postal</label>
+                            <input type="text" name="codigo_postal" id="id_codigo_postal" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_ciudad" class="form-label fw-bold text-secondary">Ciudad</label>
+                            <input type="text" name="ciudad" id="id_ciudad" class="form-control rounded-3 py-2 border-2" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 20px;">
+                    <!-- 3. RESUMEN DE COMPRA -->
+                    <div class="card shadow-lg border-0 rounded-4 p-4 mb-4">
+                        <div class="mb-3 d-flex align-items-center">
+                            <span class="fw-bold fs-5" style="color: #7122FA;">🐾 Fenix Pet Shop</span>
+                        </div>
+
+                        <div class="p-3 mb-3 rounded-3 text-white text-center shadow-sm" style="background: linear-gradient(135deg, #7122FA, #8B5CF6);">
+                            <h3 class="h5 fw-bold mb-0">Total a Pagar</h3>
+                        </div>
+
+                        {% with subtotal_sin_iva=carrito.get_precio_total %}
+                            <div class="d-flex justify-content-between mb-2 text-secondary">
+                                <span>Subtotal (sin IVA)</span>
+                                <span class="fw-bold">${{ subtotal_sin_iva|floatformat:2 }}</span>
+                            </div>
+
+                            {% with iva=subtotal_sin_iva|mul:0.19 %}
+                                <div class="d-flex justify-content-between mb-2 pb-2 border-bottom text-secondary">
+                                    <span>Impuestos (IVA 19%)</span>
+                                    <span class="fw-bold">${{ iva|floatformat:2 }}</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="text-secondary">Envío & Manejo</span>
+                                    <span class="fw-bold text-success">GRATIS 🚚</span>
+                                </div>
+
+                                {% with total_final=subtotal_sin_iva|add:iva %}
+                                    <div class="d-flex justify-content-between pt-3 border-top border-2">
+                                        <span class="h5 fw-bold mb-0">Total Final:</span>
+                                        <span class="h4 fw-bold mb-0" style="color: #7122FA;">${{ total_final|floatformat:2 }}</span>
+                                    </div>
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+
+                        <p class="small text-muted mt-3 mb-0">
+                            Los impuestos y costos de envío se calculan en base al IVA del 19%.
+                        </p>
+                    </div>
+
+                    <!-- 4. MÉTODO DE PAGO -->
+                    <div class="card shadow-lg border-0 rounded-4 p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                            <h3 class="h5 fw-bold mb-0" style="color: #7122FA;">💳 Método de Pago</h3>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="metodo_pago" class="form-label fw-bold text-secondary">Selecciona tu método de pago:</label>
+                            <select name="metodo_pago" id="metodo_pago" class="form-select rounded-3 py-2 border-2" required>
+                               <option value="TARJETA_PASARELA">💳 Tarjeta de crédito / débito</option>
+                               <option value="MANUAL_TRANSFERENCIA">📱 Nequi / Daviplata</option>
+                               <option value="CONTRAENTREGA">💵 Pago en efectivo (contra entrega)</option>
+
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-lg w-100 fw-bold rounded-pill text-white shadow-lg py-3" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+                            <i class="fas fa-check-circle me-2"></i> Confirmar Orden
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

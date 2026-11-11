@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block banner %}
+<!-- BANNER VIBRANTE CON EL LOGOTIPO GRANDE DE FENIX -->
+<div class="petstore-banner text-white d-flex align-items-center shadow-lg"
+     style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 30%, #9b59b6 70%, #ff007f 100%); min-height: 70vh; position: relative; overflow: hidden;">
+
+    <!-- Círculos decorativos translúcidos -->
+    <div style="position: absolute; top: -50px; right: -50px; width: 350px; height: 350px; background: rgba(57, 255, 20, 0.15); border-radius: 50%; pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -80px; left: -80px; width: 400px; height: 400px; background: rgba(255, 230, 0, 0.15); border-radius: 50%; pointer-events: none;"></div>
+
+    <div class="container py-5 position-relative" style="z-index: 2;">
+        <div class="row align-items-center">
+
+            <div class="col-lg-6 text-center text-lg-start">
+                <span class="badge fs-6 px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm" style="background-color: #ff007f; color: #111;">
+                     ¡Bienvenidos a Fenix Pet Shop!
+                </span>
+                <h1 class="display-3 fw-bold mb-4 text-shadow" style="letter-spacing: -1px; color: #ffffff; text-shadow: 0 3px 10px rgba(0,0,0,0.3);">
+                    Amor y nutrición en cada patita 🐾
+                </h1>
+                <p class=" lead mb-4 fw-medium text-dark" style="color: #ffffff !important;">
+                    Calcula la porción exacta en gramos, explora nuestros productos y dale a tu mascota el cuidado profesional que merece.
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                    <a href="{% url 'catalogo:lista_productos' %}" class="btn btn-lg fw-bold rounded-pill px-4 shadow-lg text-dark" style="background-color: #00f2fe; border-color: #ffe600;">
+                        <i class="fas fa-bone me-2"></i> Ver Catálogo
+                    </a>
+                </div>
+            </div>
+
+            <!-- LOGOTIPO GRANDE SUSTITUYENDO LA PATA -->
+            <div class="col-lg-6 text-center d-none d-lg-block">
+                <div class="p-3 rounded-circle d-inline-block shadow-lg" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 3px solid rgba(255,255,255,0.5);">
+                    <img src="{% static 'catalogo/img/FénixLogomage.jpeg' %}" alt="Logo Fenix Pet Shop" class="rounded-circle shadow-lg" style="width: 280px; height: 280px; object-fit: cover; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- SECCIÓN DE FAVORITOS -->
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold display-5 text-dark">🐶 Nuestros Favoritos 🐱</h2>
+        <p class="text-muted fs-5">Los productos preferidos por las mascotas y recomendados por expertos.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-12 text-center py-5 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 6px solid #ff007f;">
+            <p class="text-muted mb-3 fs-5">Explora todas nuestras categorías y utiliza la NutriCalculadora de porciones integrada.</p>
+            <a href="{% url 'catalogo:lista_productos' %}" class="btn btn-lg rounded-pill px-5 fw-bold shadow text-white" style="background-color: #ff007f; border: none;">
+                Explorar Todo el Catálogo
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

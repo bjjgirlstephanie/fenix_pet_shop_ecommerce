@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}Pago Contra Entrega Pendiente - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Tarjeta principal con estilo vibrante y bordes redondeados -->
+            <div class="card shadow-lg border-0 rounded-4 p-5 text-center overflow-hidden">
+
+                <!-- Franja superior degradada corporativa -->
+                <div class="card-header text-white py-3 px-4 fw-bold fs-5 mb-4 rounded-3" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+                    🐾 Fenix Pet Shop - Pago Contra Entrega
+                </div>
+
+                <div class="mb-3">
+                    <i class="fas fa-hand-holding-dollar fa-4x mb-3" style="color: #7122FA; filter: drop-shadow(0 4px 6px rgba(113, 34, 250, 0.2));"></i>
+                </div>
+
+                <h1 class="h2 fw-bold mb-3" style="color: #7122FA;">¡Orden #{{ orden_id }} Confirmada!</h1>
+
+                <p class="lead text-muted">El método de pago elegido es <strong style="color: #8B5CF6;">Efectivo (Contra Entrega)</strong>.</p>
+
+                <!-- Resumen de pago con estilo moderno -->
+                <div class="alert p-4 my-4 rounded-4 shadow-sm border text-start" style="background-color: #f3e8ff; border-color: #8B5CF6 !important;">
+                    <h5 class="fw-bold mb-3 text-center" style="color: #7122FA;">Total Pendiente: ${{ monto_total|floatformat:2 }} {{ moneda }}</h5>
+                    <p class="small text-secondary">{{ instrucciones }}</p>
+                    <div class="alert py-2 small mb-0 mt-3 text-dark bg-white shadow-sm rounded-3 border">
+                        💡 <em>Nos pondremos en contacto para confirmar los detalles de la entrega.</em>
+                    </div>
+                </div>
+
+                <!-- Botón de retorno con degradado corporativo -->
+                <div class="mt-3">
+                    <a href="{% url 'catalogo:lista_productos' %}" class="btn text-white fw-bold py-3 px-5 rounded-pill shadow-lg w-50" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+                        Volver a la Tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

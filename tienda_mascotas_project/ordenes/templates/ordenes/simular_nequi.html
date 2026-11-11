@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}Simulación Nequi - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden text-center">
+                <div class="card-header text-white py-4 px-4" style="background: linear-gradient(135deg, #d91880, #7122FA); border-bottom: 3px solid #00f2fe;">
+                    <h3 class="fw-bold mb-0">🟣 Simulación Nequi / Daviplata</h3>
+                    <p class="small mb-0 text-white-50">Orden #{{ orden_id }} • Total: ${{ total_final|floatformat:2 }}</p>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white text-start">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Número de Celular (10 dígitos)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-2">🇨🇴 +57</span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-2" maxlength="10" placeholder="3001234567" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary">Clave Dinámica (6 dígitos)</label>
+                            <input type="password" class="form-control rounded-3 py-2 border-2" maxlength="6" placeholder="123456" required>
+                            <div class="form-text small text-muted">💡 Ingresa cualquier clave de prueba para autorizar el cobro.</div>
+                        </div>
+                        <button type="submit" class="btn text-white fw-bold py-3 rounded-pill shadow-lg w-100" style="background: linear-gradient(135deg, #d91880, #7122FA); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+                            ⚡ Autorizar Pago Dinámico
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'ordenes:orden_create' %}" class="text-decoration-none text-muted small">← Cancelar y volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

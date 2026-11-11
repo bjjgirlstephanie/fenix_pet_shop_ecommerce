@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}¡Orden Confirmada! - Fenix Pet Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Encabezado con toque vibrante -->
+    <div class="text-center mb-5 pt-3">
+        <i class="fas fa-check-circle fa-4x mb-3" style="color: #7122FA; filter: drop-shadow(0 4px 6px rgba(113, 34, 250, 0.2));"></i>
+        <h1 class="fw-bold display-5" style="color: #7122FA;">¡Orden Confirmada!</h1>
+        <p class="text-muted lead">Gracias por tu compra, <strong style="color: #8B5CF6;">{{ orden.nombre }} {{ orden.apellido }}</strong>.</p>
+    </div>
+
+    <!-- Datos principales -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4 overflow-hidden">
+        <div class="card-header text-white py-3 px-4 fw-bold fs-5" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+            🐾 Detalles de la Orden
+        </div>
+        <div class="card-body p-4 p-md-4 bg-white">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p class="mb-2"><strong>Número de Orden:</strong> <span class="badge bg-light text-dark border px-2 py-1">#{{ orden.id }}</span></p>
+                    <p class="mb-2"><strong>Correo del Cliente:</strong> <span class="text-muted">{{ orden.email }}</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <strong>Estado:</strong>
+                        {% if orden.estado == "PAGADA" or orden.pagado or orden.metodo_pago == "MANUAL_TRANSFERENCIA" or orden.metodo_pago == "TARJETA_PASARELA" %}
+                            <span class="badge bg-success rounded-pill px-3 py-1">✅ PAGO REALIZADO</span>
+                        {% elif orden.estado == "CANCELADO" %}
+                            <span class="badge bg-danger rounded-pill px-3 py-1">❌ CANCELADO</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-1">⏳ PAGO PENDIENTE</span>
+                        {% endif %}
+                    </p>
+                    <p class="mb-2"><strong>Método de Pago:</strong> <span class="text-muted">{{ orden.metodo_pago|title }}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4 overflow-hidden">
+        <div class="card-header text-white py-3 px-4 fw-bold fs-5" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+            📦 Productos Comprados
+        </div>
+        <div class="card-body p-4 bg-white">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 text-secondary">Producto</th>
+                            <th class="py-3 text-secondary text-center">Cantidad</th>
+                            <th class="py-3 text-secondary text-end">Precio Unitario</th>
+                            <th class="py-3 text-secondary text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in orden_items %}
+                        <tr>
+                            <td class="fw-bold" style="color: #7122FA;">{{ item.producto.nombre }}</td>
+                            <td class="text-center">{{ item.cantidad }}</td>
+                            <td class="text-end text-muted">${{ item.precio|floatformat:2 }}</td>
+                            <td class="text-end fw-bold" style="color: #8B5CF6;">${{ item.precio|mul:item.cantidad|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Resumen de Pago -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4 overflow-hidden">
+        <div class="card-header text-white py-3 px-4 fw-bold fs-5" style="background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #ec4899); border-bottom: 3px solid #00f2fe;">
+            💳 Resumen de Pago
+        </div>
+        <div class="card-body p-4 bg-white">
+            <div class="d-flex justify-content-between mb-2 text-secondary">
+                <strong>Subtotal:</strong>
+                <span>${{ subtotal|floatformat:2 }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 pb-2 border-bottom text-secondary">
+                <strong>IVA (19%):</strong>
+                <span>${{ iva|floatformat:2 }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2">
+                <strong class="h5 mb-0 text-dark">Total Final:</strong>
+                <span class="h4 fw-bold mb-0" style="color: #7122FA;">${{ total_final|floatformat:2 }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Cancelación por tiempo límite (5 horas) -->
+    <div class="card shadow-lg border-0 rounded-4 mt-4 overflow-hidden">
+        <div class="card-body p-4 text-center bg-white">
+            <h5 class="fw-bold mb-3" style="color: #7122FA;">Gestión de la Orden</h5>
+
+            {% if orden.puede_cancelar %}
+                <p class="text-muted small">Puedes cancelar esta orden dentro del margen de las 5 horas posteriores a su creación.</p>
+                <form action="{% url 'ordenes:cancelar_orden' orden.id %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="return confirm('¿Estás seguro de que deseas cancelar esta orden?');">
+                        ❌ Cancelar Orden
+                    </button>
+                </form>
+            {% elif orden.estado == "CANCELADO" %}
+                <div class="alert alert-danger py-2 mb-0 rounded-pill">
+                    ⚠️ Esta orden se encuentra <strong>CANCELADA</strong>.
+                </div>
+            {% else %}
+                <p class="text-muted small mb-0">⚠️ El plazo límite de 5 horas para cancelar esta orden ha expirado.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="text-center mt-5">
+        <a href="{% url 'catalogo:lista_productos' %}" class="btn btn-lg text-white fw-bold px-5 py-3 rounded-pill shadow-lg" style="background: linear-gradient(135deg, #7122FA, #8B5CF6); border: 2px solid #00f2fe; transition: all 0.3s ease;">
+            <i class="fas fa-shopping-cart me-2"></i> Seguir Comprando
+        </a>
+    </div>
+
+</div>
+{% endblock %}
