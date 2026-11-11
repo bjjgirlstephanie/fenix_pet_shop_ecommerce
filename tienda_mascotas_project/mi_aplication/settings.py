@@ -1,5 +1,6 @@
 # tienda_mascotas_project/mi_aplication/settings.py
 # ⚠️ IMPORTACIONES Y CARGA DE DOTENV
+import dj_database_url
 '''
 from dotenv import load_dotenv
 import os
@@ -302,12 +303,8 @@ WSGI_APPLICATION = 'mi_aplication.wsgi.application'
 # --- BASE DE DATOS ---
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tienda_mascotas_db',
-        'USER': 'postgres',
-        'PASSWORD': '1929',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
