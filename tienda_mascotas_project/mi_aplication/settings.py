@@ -1,6 +1,5 @@
 # tienda_mascotas_project/mi_aplication/settings.py
 # ⚠️ IMPORTACIONES Y CARGA DE DOTENV
-import dj_database_url
 '''
 from dotenv import load_dotenv
 import os
